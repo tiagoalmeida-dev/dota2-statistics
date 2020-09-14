@@ -54,7 +54,11 @@ class ProPlayersIndexPage extends React.Component<AllProps> {
             </td>
             <td>
               <ProPlayerTeam>
-                <Link to={`/teams/${proPlayer.team_id}`}>{proPlayer.team_name || '(no name)'}</Link>
+                {proPlayer.team_id ? (
+                  <Link to={`/teams/${proPlayer.team_id}`}>{proPlayer.team_name || '(no name)'}</Link>
+                ) : (
+                  proPlayer.team_name
+                )}
               </ProPlayerTeam>
             </td>
           </tr>
