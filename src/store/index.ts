@@ -11,12 +11,16 @@ import { HeroesState } from './heroes/types'
 import teamsSaga from './teams/sagas'
 import { TeamsState } from './teams/types'
 import { teamsReducer } from './teams/reducer'
+import { ProPlayersState } from './proPlayers/types'
+import { proPlayersReducer } from './proPlayers/reducer'
+import proPlayersSaga from './proPlayers/sagas'
 
 // The top-level state object
 export interface ApplicationState {
   layout: LayoutState
   heroes: HeroesState
   teams: TeamsState
+  proPlayers: ProPlayersState
   router: RouterState
 }
 
@@ -28,6 +32,7 @@ export const createRootReducer = (history: History) =>
     layout: layoutReducer,
     heroes: heroesReducer,
     teams: teamsReducer,
+    proPlayers: proPlayersReducer,
     router: connectRouter(history)
   })
 
@@ -35,5 +40,5 @@ export const createRootReducer = (history: History) =>
 // "generator function", which you can read about here:
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 export function* rootSaga() {
-  yield all([fork(heroesSaga), fork(teamsSaga)])
+  yield all([fork(heroesSaga), fork(teamsSaga), fork(proPlayersSaga)])
 }

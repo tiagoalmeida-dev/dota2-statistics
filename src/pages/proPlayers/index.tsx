@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import moment from 'moment'
+import { Link } from 'react-router-dom'
+import ReactCountryFlag from 'react-country-flag'
 
 import styled from '../../utils/styled'
 import Page from '../../components/layout/Page'
@@ -12,62 +12,53 @@ import LoadingOverlayInner from '../../components/data/LoadingOverlayInner'
 import LoadingSpinner from '../../components/data/LoadingSpinner'
 
 import { ApplicationState } from '../../store'
-import { Team } from '../../store/teams/types'
-import { fetchRequest } from '../../store/teams/actions'
+import { ProPlayer } from '../../store/proPlayers/types'
+import { fetchRequest } from '../../store/proPlayers/actions'
 
 // Separate state props + dispatch props to their own interfaces.
 interface PropsFromState {
   loading: boolean
-  data: Team[]
+  data: ProPlayer[]
   errors?: string
 }
 
 // We can use `typeof` here to map our dispatch types to the props, like so.
 interface PropsFromDispatch {
-  fetchTeams: typeof fetchRequest
+  fetchRequest: typeof fetchRequest
 }
 
 // Combine both state + dispatch props - as well as any props we want to pass - in a union type.
 type AllProps = PropsFromState & PropsFromDispatch
 
-class TeamsIndexPage extends React.Component<AllProps> {
+class ProPlayersIndexPage extends React.Component<AllProps> {
   public componentDidMount() {
-    const { data, fetchTeams } = this.props
-
-    if (data.length === 0) {
-      fetchTeams()
-    }
+    const { fetchRequest: fr } = this.props
+    fr()
   }
 
   private renderData() {
     const { data } = this.props
 
     return (
-      <DataTable columns={['Rank', 'Team', 'Rating', 'Wins / Losses', 'Last Match']} widths={['', 'auto', '', '', '']}>
-        {data.slice(0, 20).map((team, i) => {
-          const lastMatch = moment(team.last_match_time * 1000)
-
-          return (
-            <tr key={team.team_id}>
-              <td>{i + 1}</td>
-              <TeamDetail>
-                <TeamLogo>{team.logo_url && <img src={team.logo_url} alt={team.tag} />}</TeamLogo>
-                <TeamName>
-                  <Link to={`/teams/${team.team_id}`}>{team.name || '(no name)'}</Link>
-                </TeamName>
-              </TeamDetail>
-              <td>{team.rating.toFixed(0)}</td>
-              <td>
-                {team.wins || 0} / {team.losses || 0}
-              </td>
-              <td>
-                <time dateTime={lastMatch.toISOString()} title={lastMatch.format('LLLL')}>
-                  {lastMatch.fromNow()}
-                </time>
-              </td>
-            </tr>
-          )
-        })}
+      <DataTable columns={['Player', 'Country', 'Team']} widths={['auto', '', '']}>
+        {data.slice(0, 100).map(proPlayer => (
+          <tr key={proPlayer.account_id}>
+            <HeroDetail>
+              <HeroIcon src={proPlayer.avatar} alt={proPlayer.personaname} />
+              <HeroName>
+                <a href={proPlayer.profileurl}>{proPlayer.personaname}</a>
+              </HeroName>
+            </HeroDetail>
+            <td>
+              <ReactCountryFlag countryCode={proPlayer.loccountrycode} svg aria-label={proPlayer.country_code} />
+            </td>
+            <td>
+              <ProPlayerTeam>
+                <Link to={`/teams/${proPlayer.team_id}`}>{proPlayer.team_name || '(no name)'}</Link>
+              </ProPlayerTeam>
+            </td>
+          </tr>
+        ))}
       </DataTable>
     )
   }
@@ -97,21 +88,21 @@ class TeamsIndexPage extends React.Component<AllProps> {
 // It's usually good practice to only include one context at a time in a connected component.
 // Although if necessary, you can always include multiple contexts. Just make sure to
 // separate them from each other to prevent prop conflicts.
-const mapStateToProps = ({ teams }: ApplicationState) => ({
-  loading: teams.loading,
-  errors: teams.errors,
-  data: teams.data
+const mapStateToProps = ({ proPlayers }: ApplicationState) => ({
+  loading: proPlayers.loading,
+  errors: proPlayers.errors,
+  data: proPlayers.data
 })
 
 // mapDispatchToProps is especially useful for constraining our actions to the connected component.
 // You can access these via `this.props`.
 const mapDispatchToProps = {
-  fetchTeams: fetchRequest
+  fetchRequest
 }
 
 // Now let's connect our component!
 // With redux v4's improved typings, we can finally omit generics here.
-export default connect(mapStateToProps, mapDispatchToProps)(TeamsIndexPage)
+export default connect(mapStateToProps, mapDispatchToProps)(ProPlayersIndexPage)
 
 const TableWrapper = styled('div')`
   position: relative;
@@ -120,32 +111,29 @@ const TableWrapper = styled('div')`
   min-height: 200px;
 `
 
-const TeamDetail = styled('td')`
+const HeroDetail = styled('td')`
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 66px;
 `
 
-const TeamLogo = styled('div')`
-  position: relative;
-  width: 50px;
-  height: 50px;
-
-  img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
+const HeroIcon = styled('img')`
+  width: 32px;
+  height: 32px;
 `
 
-const TeamName = styled('div')`
+const HeroName = styled('div')`
   flex: 1 1 auto;
   height: 100%;
   margin-left: 1rem;
 
   a {
     color: ${props => props.theme.colors.brand};
+  }
+`
+
+const ProPlayerTeam = styled('div')`
+  a {
+    text-decoration: underline;
   }
 `

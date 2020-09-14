@@ -96,6 +96,9 @@ const Header: React.SFC<HeaderProps> = ({ title }) => (
         <HeaderNavLink to="/teams" activeClassName="is-active">
           Teams
         </HeaderNavLink>
+        <HeaderNavLink to="/pro-players" activeClassName="is-active">
+          Pro Players
+        </HeaderNavLink>
       </HeaderNav>
       <HeaderRight>
         <LayoutContainer>

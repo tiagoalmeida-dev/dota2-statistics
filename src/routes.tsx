@@ -7,6 +7,7 @@ import Header from './components/layout/Header'
 import IndexPage from './pages/index'
 import HeroesPage from './pages/heroes'
 import TeamsPage from './pages/teams'
+import ProPlayersPage from './pages/proPlayers'
 import normalize from './styles/normalize'
 import globals from './styles/globals'
 
@@ -23,11 +24,12 @@ const Routes: React.SFC = () => (
   <Root>
     <Global styles={normalize} />
     <Global styles={globals} />
-    <Header title="Example App" />
+    <Header title="Dota2" />
     <Switch>
       <Route exact path="/" component={IndexPage} />
       <Route path="/heroes" component={HeroesPage} />
       <Route path="/teams" component={TeamsPage} />
+      <Route path="/pro-players" component={ProPlayersPage} />
       <Route component={() => <div>Not Found</div>} />
     </Switch>
   </Root>
