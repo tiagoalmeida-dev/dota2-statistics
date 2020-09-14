@@ -10,6 +10,7 @@ import DataTable from '../../components/layout/DataTable'
 import LoadingOverlay from '../../components/data/LoadingOverlay'
 import LoadingOverlayInner from '../../components/data/LoadingOverlayInner'
 import LoadingSpinner from '../../components/data/LoadingSpinner'
+import ProPlayersTable from '../../components/proPlayers/Table'
 
 import { ApplicationState } from '../../store'
 import { ProPlayer } from '../../store/proPlayers/types'
@@ -68,7 +69,7 @@ class ProPlayersIndexPage extends React.Component<AllProps> {
   }
 
   public render() {
-    const { loading } = this.props
+    const { loading, data } = this.props
 
     return (
       <Page>
@@ -81,7 +82,7 @@ class ProPlayersIndexPage extends React.Component<AllProps> {
                 </LoadingOverlayInner>
               </LoadingOverlay>
             )}
-            {this.renderData()}
+            <ProPlayersTable data={data} />
           </TableWrapper>
         </Container>
       </Page>
