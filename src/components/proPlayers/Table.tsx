@@ -2,6 +2,7 @@
 import * as React from 'react'
 import { useTable, usePagination, Column } from 'react-table'
 
+import styled from '../../utils/styled'
 import { ProPlayer } from '../../store/proPlayers/types'
 import NameCell from './NameCell'
 import TeamCell from './TeamCell'
@@ -53,7 +54,7 @@ const Table: React.FC<TableProps> = ({ data }) => {
     {
       columns,
       data,
-      initialState: { pageIndex: 0 }
+      initialState: { pageIndex: 0, pageSize: 30 }
     },
     usePagination
   )
@@ -61,7 +62,7 @@ const Table: React.FC<TableProps> = ({ data }) => {
   // Render the UI for your table
   return (
     <>
-      <table {...getTableProps()}>
+      <DataTable {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -72,7 +73,7 @@ const Table: React.FC<TableProps> = ({ data }) => {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
+          {page.map(row => {
             prepareRow(row)
             return (
               <tr {...row.getRowProps()}>
@@ -83,12 +84,12 @@ const Table: React.FC<TableProps> = ({ data }) => {
             )
           })}
         </tbody>
-      </table>
+      </DataTable>
       {/*
         Pagination can be built however you'd like.
         This is just a very basic UI implementation:
       */}
-      <div className="pagination">
+      <Pagination className="pagination">
         <button type="button" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
@@ -113,8 +114,8 @@ const Table: React.FC<TableProps> = ({ data }) => {
             type="number"
             defaultValue={pageIndex + 1}
             onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(page)
+              const pageNum = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(pageNum)
             }}
             style={{ width: '100px' }}
           />
@@ -131,9 +132,44 @@ const Table: React.FC<TableProps> = ({ data }) => {
             </option>
           ))}
         </select>
-      </div>
+      </Pagination>
     </>
   )
 }
 
 export default Table
+
+const DataTable = styled('table')`
+  margin-bottom: 0;
+  border-top: 1px solid ${props => props.theme.colors.borders};
+  border-bottom: 1px solid ${props => props.theme.colors.borders};
+
+  thead {
+    tr {
+      th {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 2px solid ${props => props.theme.colors.borders};
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-top: 1px solid ${props => props.theme.colors.borders};
+
+      &:nth-child(even) {
+        background: ${props => props.theme.colors.tableOdd};
+      }
+
+      td {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+  }
+`
+
+const Pagination = styled('div')`
+  text-align: center;
+`

@@ -107,10 +107,7 @@ const mapDispatchToProps = {
 
 // Now let's connect our component!
 // With redux v4's improved typings, we can finally omit generics here.
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HeroesIndexPage)
+export default connect(mapStateToProps, mapDispatchToProps)(HeroesIndexPage)
 
 const TableWrapper = styled('div')`
   position: relative;
