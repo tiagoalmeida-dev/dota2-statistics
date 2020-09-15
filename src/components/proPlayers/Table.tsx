@@ -3,6 +3,9 @@ import * as React from 'react'
 import { useTable, usePagination, Column } from 'react-table'
 
 import { ProPlayer } from '../../store/proPlayers/types'
+import NameCell from './NameCell'
+import TeamCell from './TeamCell'
+import CountryCell from './CountryCell'
 
 type TableProps = {
   data: ProPlayer[]
@@ -13,11 +16,15 @@ const Table: React.FC<TableProps> = ({ data }) => {
     () => [
       {
         Header: 'Player',
-        accessor: 'personaname'
+        Cell: NameCell
+      },
+      {
+        Header: 'Country',
+        Cell: CountryCell
       },
       {
         Header: 'Team',
-        accessor: 'team_name'
+        Cell: TeamCell
       }
     ],
     []
