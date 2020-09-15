@@ -1,6 +1,7 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-props-no-spreading */
 import * as React from 'react'
-import { useTable, usePagination, Column } from 'react-table'
+import { useTable, usePagination, useSortBy, Column } from 'react-table'
 
 import styled from '../../utils/styled'
 import { ProPlayer } from '../../store/proPlayers/types'
@@ -21,10 +22,12 @@ const Table: React.FC<TableProps> = ({ data }) => {
       },
       {
         Header: 'Country',
+        accessor: 'loccountrycode',
         Cell: CountryCell
       },
       {
         Header: 'Team',
+        accessor: 'team_name',
         Cell: TeamCell
       }
     ],
@@ -56,6 +59,7 @@ const Table: React.FC<TableProps> = ({ data }) => {
       data,
       initialState: { pageIndex: 0, pageSize: 30 }
     },
+    useSortBy,
     usePagination
   )
 
@@ -67,7 +71,10 @@ const Table: React.FC<TableProps> = ({ data }) => {
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render('Header')}
+                  <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                </th>
               ))}
             </tr>
           ))}
